@@ -2,7 +2,7 @@ class Cmdsnap < Formula
   desc "Capture terminal commands and their output for easy sharing"
   homepage "https://github.com/marioschiras/cmdsnap"
   url "https://github.com/marioschiras/cmdsnap/archive/refs/tags/v1.0.0.tar.gz"
-  sha256 "PLACEHOLDER_SHA256"
+  sha256 "3fb55e057658c49510772aa9515e6ad8f5a0ff290eb4e3b8f1ba3e727464a075"
   license "MIT"
 
   def install
