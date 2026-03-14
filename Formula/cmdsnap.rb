@@ -6,20 +6,37 @@ class Cmdsnap < Formula
   license "MIT"
 
   def install
-    # Install the main zsh integration
     share.install "integrations/zsh.cmdsnap.zsh"
     
-    # Create a wrapper script that sources the zsh file
-    (bin/"cmdsnap").write <<~EOS
+    # Create a setup helper instead of a broken wrapper
+    (bin/"cmdsnap-setup").write <<~EOS
       #!/bin/zsh
-      source "#{share}/zsh.cmdsnap.zsh"
-      cmdsnap "$@"
+      SOURCE_LINE='source $(brew --prefix)/share/zsh.cmdsnap.zsh'
+      
+      if grep -q "zsh.cmdsnap.zsh" ~/.zshrc 2>/dev/null; then
+        echo "✓ cmdsnap is already in your .zshrc"
+      else
+        echo "" >> ~/.zshrc
+        echo "# cmdsnap - terminal command capture" >> ~/.zshrc
+        echo "$SOURCE_LINE" >> ~/.zshrc
+        echo "✓ Added cmdsnap to ~/.zshrc"
+      fi
+      
+      echo ""
+      echo "Run this to start using cmdsnap now:"
+      echo "  source ~/.zshrc"
+      echo ""
+      echo "Or restart your terminal."
     EOS
   end
 
   def caveats
     <<~EOS
-      To enable cmdsnap in your shell, add this to your ~/.zshrc:
+      To complete installation, run:
+
+        cmdsnap-setup
+
+      Or manually add this to your ~/.zshrc:
 
         source $(brew --prefix)/share/zsh.cmdsnap.zsh
 
@@ -28,6 +45,6 @@ class Cmdsnap < Formula
   end
 
   test do
-    assert_match "cmdsnap", shell_output("#{bin}/cmdsnap help")
+    assert_predicate share/"zsh.cmdsnap.zsh", :exist?
   end
 end
